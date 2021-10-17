@@ -4,23 +4,29 @@ var bool_dbg = true;
 var bool_endQuiz = false; 
 var int_secondsWait = 800;
 if(bool_dbg)console.log("debugging")
-var int_time = 60;
-var int_highScore = 0;
+var int_score = 60;
+var int_distance = 60*1000;
+var int_decrementCount = 0;
+//var int_highScore = 0;
 var int_answerCounter = 0;
 var int_questionCounter= 0;
+
+var float_minutesToAdd = 1;
+var float_hoursToAdd = 0;
+
 var str_userAnswered = "";
 // create a dictionary of arrays
 // the key is the users initials
 // the value is an array of thier scores as an object
 var dictArr_allScores = {}
-var obj_oneScore = { str_Initials:"NULL", int_score:0, int_time:0 };
+var obj_oneScore = { str_Initials:"NULL", int_score:0, int_score:0 };
 
 
 // create an array of question object objects
 var arrObj_questions = [
-    {str_answer: "insertCorrectAnswer", str_question: "insertQuestion1", int_points:10, correctAnswer: "InsertOption1", ArrStr_answerOptions: ["InsertOption1","InsertOption2", "InsertOption3"]},
-    {str_answer: "insertCorrectAnswer", str_question: "insertQuestion2", int_points:20, correctAnswer: "InsertOptionB", ArrStr_answerOptions: ["InsertOptionA","InsertOptionB", "InsertOptionC"]},
-    {str_answer: "insertCorrectAnswer", str_question: "insertQuestion3", int_points:30, correctAnswer: "InsertOption5", ArrStr_answerOptions: ["InsertOption4","InsertOption5", "InsertOption6"]}
+    {str_answer: "InsertOption1", str_question: "insertQuestion1", int_points:10*1000, correctAnswer: "InsertOption1", ArrStr_answerOptions: ["InsertOption1","InsertOption2", "InsertOption3"]},
+    {str_answer: "InsertOptionC", str_question: "insertQuestion2", int_points:10*1000, correctAnswer: "InsertOptionB", ArrStr_answerOptions: ["InsertOptionA","InsertOptionB", "InsertOptionC"]},
+    {str_answer: "InsertOption6", str_question: "insertQuestion3", int_points:10*1000, correctAnswer: "InsertOption5", ArrStr_answerOptions: ["InsertOption4","InsertOption5", "InsertOption6"]}
 ]
 
 // ============
@@ -40,30 +46,113 @@ var func_waitnSeconds = function(paramSeconds){
 
 }
 
+var func_setTime = function(){
+
+    
+// Set the date we're counting down to, todays date plus some time
+var int_countDownDate =  new Date().getTime();
+
+//int_countDownDate += 60*60*1000 ; // add 1 hour, or 59 int_minutes to todays future date
+//int_countDownDate += 60*1000; // add 60 int_seconds to  future date
+
+int_countDownDate += float_minutesToAdd* 60*1000; // add x amount of minutes
+//int_countDownDate += float_hoursToAdd*60*60*1000
+
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var int_now = new Date().getTime();
+    
+  // Find the int_distance between int_now and the int_countDownDate
+    int_distance = int_countDownDate - int_now;
+  // set the global var, with the users times score to the 
+  // inital difference between the start and end time
+  
+  int_distance += int_decrementCount
+  
+  
+  int_score = int_distance
+    
+  // Time calculations for int_days, int_hours, int_minutes and int_seconds
+  var int_days = Math.floor(int_distance / (1000 * 60 * 60 * 24));
+  var int_hours = Math.floor((int_distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var int_minutes = Math.floor((int_distance % (1000 * 60 * 60)) / (1000 * 60));
+  var int_seconds = Math.floor((int_distance % (1000 * 60)) / 1000);
+    
+  // Output the result in an element with id="timer"
+  var divElement_timer = document.querySelector("#timer");
+  divElement_timer.innerHTML = `Timer: ${int_minutes}m ${int_seconds}s `
+
+if(bool_endQuiz){
+    // if the user finishes all the questions 
+    // stop the quiz and stop the timer
+    func_endQuiz();
+    clearInterval(x); // clearing the interval freezes the timer
+    //document.getElementById("timer").innerHTML = `Timer: ${int_days}d ${int_hours}h ${int_minutes}m ${int_seconds}s `
+    document.getElementById("timer").innerHTML = `Timer: ${int_minutes}m ${int_seconds}s `
+
+    
+   
+}
+    
+  // If the count down is over, write some text 
+  if (int_distance <= 0) {
+    func_endQuiz();
+    int_score = 0;
+    clearInterval(x);
+    document.getElementById("timer").innerHTML = "Timer: EXPIRED";
+    
+  }
+}, 500);
+
+}
+
 var func_checkAnswer = function(){
     var bool_validAnswer = false;
     // ToDo
+    var divElement_temp = document.createElement("div")
     var divElement_msg = document.querySelector("#form-question-msg");
     // get the current question 
     var obj_currentQuestion = arrObj_questions[int_questionCounter]
+
     var str_currentAnswer = obj_currentQuestion.str_answer
 
-    // todo add css for wrong /correct color coding
-    //todo update class namews with a class name of correct or wrong
-    // todo update the message to color code correct answer
-    // todo update if statement to color code wrong answer & correcct answer in msg
-    // todo adjust score
 
-    if(str_userAnswered === str_currentAnswer )
+    var str_msg = "";
+    var divElement_correct = document.createElement("div");
+    var divElement_incorrect = document.createElement("div");
+    divElement_correct.className = "form-question-msg correct"
+    divElement_incorrect.className = "form-question-msg incorrect";
+    if(bool_dbg)console.log(`correct Answer ${str_currentAnswer} | user answer : ${str_userAnswered}`)
+    if(str_userAnswered == str_currentAnswer ){
         bool_validAnswer = true
-    else
-        bool_validAnswer = false
-    
+        str_msg = "Correct: " + str_currentAnswer;
+        divElement_correct.textContent = str_msg;
+        divElement_correct.style= "color: green"
+        divElement_temp.appendChild(divElement_correct)
 
-    var pElement = document.createElement("p");
-    pElement.className = ""
-    divElement_msg.textContent = `Testing ${int_questionCounter}`
+    }
+    else
+        {
+            
+            str_msg = "Correct: " + str_currentAnswer;
+            divElement_correct.textContent = str_msg;
+            str_msg = "Wrong: " + str_currentAnswer;
+            divElement_incorrect.textContent = str_msg;
+            bool_validAnswer = false
+            divElement_correct.style= "color: green"
+            divElement_incorrect.style="color: red"
+            divElement_temp.appendChild(divElement_correct)
+            divElement_temp.appendChild(divElement_incorrect)
+
+            if(bool_dbg)console.log(`reduce points by ${obj_currentQuestion.int_points} | int_score ${int_score}`)
+            int_decrementCount -= obj_currentQuestion.int_points;
+        }
     bool_validAnswer = false
+    divElement_msg.innerHTML = divElement_temp.innerHTML;    
+    int_questionCounter++;
 }
 
 var func_nextQuestion = function (){
@@ -150,7 +239,7 @@ var func_nextQuestion = function (){
     //divElement.innerHTML = `<h1> ${obj_currentQuestion.str_question} </h1>`;
     // Set the div on index.html to our placeholder div to render the changes
     divElement_DynamicSection.innerHTML =  divElement.innerHTML;
-    int_questionCounter++;
+    
 }
 
 var func_startQuiz = function (){
@@ -161,7 +250,7 @@ var func_startQuiz = function (){
     bool_endQuiz = false;
     // todo: set timer to zero
     // set high score hack to zero
-    int_highScore = 0;
+    //int_highScore = 0;
 
     if(bool_dbg)console.log('starting quiz');
     func_nextQuestion();
@@ -182,7 +271,8 @@ var func_endQuiz = function(){
 
     var pElement = document.createElement("p");
     pElement.className = "end-quiz"
-    pElement.textContent = `Your final score is ${int_highScore}`
+    if(int_score< 0) int_score = 0;
+    pElement.textContent = `Your final score is ${int_score}`
 
     var formElement = document.createElement("form");
     formElement.className = "end-quiz";
@@ -264,6 +354,7 @@ var buttonHandler =function(event){
 	if(event.target.matches(".btn-start")){
         // the event listenr is specifically listening on the start button 
         func_startQuiz();
+        func_setTime();
 	}
     else if(event.target.matches(".question-option") && !bool_endQuiz ){
         // if button clicked for next question & we are allowed to continue the quiz
@@ -297,6 +388,8 @@ var buttonHandler =function(event){
     }
 
 };
+
+
 
 
 //from index.html, add an event listener to the button element with id btnElement_start

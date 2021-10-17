@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+p {
+  text-align: center;
+  font-size: 60px;
+  margin-top: 0px;
+}
+</style>
+</head>
+<body>
+
+<p id="demo"></p>
+
+<script>
+
+var float_minutesToAdd = 5.7;
+var float_hoursToAdd = 2;
+
+
+// Set the date we're counting down to
+var int_countDownDate =  new Date().getTime();
+
+//int_countDownDate += 60*60*1000 ; // add 1 hour, or 59 int_minutes to todays future date
+//int_countDownDate += 60*1000; // add 60 int_seconds to  future date
+int_countDownDate += float_minutesToAdd* 60*1000; // add 5 int_minutes
+int_countDownDate += float_hoursToAdd*60*60*1000
+
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var int_now = new Date().getTime();
+    
+  // Find the int_distance between int_now and the count down date
+  var int_distance = int_countDownDate - int_now;
+    
+  // Time calculations for int_days, int_hours, int_minutes and int_seconds
+  var int_days = Math.floor(int_distance / (1000 * 60 * 60 * 24));
+  var int_hours = Math.floor((int_distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var int_minutes = Math.floor((int_distance % (1000 * 60 * 60)) / (1000 * 60));
+  var int_seconds = Math.floor((int_distance % (1000 * 60)) / 1000);
+    
+  // Output the result in an element with id="demo"
+  document.getElementById("demo").innerHTML = int_days + "d " + int_hours + "h "
+  + int_minutes + "m " + int_seconds + "s ";
+    
+  // If the count down is over, write some text 
+  if (int_distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000);
+
+
+
+</script>
+
+</body>
+</html>
+
+
