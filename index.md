@@ -8,19 +8,20 @@
 <body>
 
     <section id="quiz-body">
-        <div id="timer"class=" score timer"> Timer : 0</div>
+        <div id="timer" class=" score timer"> Timer : 0</div>
         <div id="quiz-dynamic-section" class="quiz-dynamic-section">
             <h1>Coding Quizlet</h1>
             <div> Lets test your coding skills. Start the timed quiz when ready</div>
-            <button id="btn-start"class="btn-start"> Start Button </button>
+            <button id="btn-start" class="btn-start"> Start Button </button>
         </div>
         <div id="form-question-msg" class="form-question-msg"></div>
 
     </section>
-    <script src="./assets/script.js"></script> 
-    <footer>
-
-    </footer>
+    <script src="script.js"></script> 
+    
 </body>
+<footer>
+
+</footer>
 </html>
 
