@@ -15,10 +15,15 @@ var float_minutesToAdd = 1;
 var float_hoursToAdd = 0;
 
 var str_userAnswered = "";
+var str_userInitials = "Null";
 // create a dictionary of arrays
 // the key is the users initials
 // the value is an array of thier scores as an object
-var dictArr_allScores = {}
+var ArrStr_allScores = []
+ArrStr_allScores = localStorage.getItem("ArrStr_allScores");
+if(!ArrStr_allScores) ArrStr_allScores =[]
+else ArrStr_allScores = JSON.parse(ArrStr_allScores)
+
 var obj_oneScore = { str_Initials:"NULL", int_score:0, int_score:0 };
 
 
@@ -272,7 +277,11 @@ var func_endQuiz = function(){
     var pElement = document.createElement("p");
     pElement.className = "end-quiz"
     if(int_score< 0) int_score = 0;
+    int_score = Math.floor(int_score/1000)
     pElement.textContent = `Your final score is ${int_score}`
+
+    
+
 
     var formElement = document.createElement("form");
     formElement.className = "end-quiz";
@@ -281,6 +290,7 @@ var func_endQuiz = function(){
     labelElement.textContent = "Enter Initials:"
     var inputElement = document.createElement("input");
     inputElement.className = "end-quiz";
+    inputElement.id = "input-initials"
     var btnElement_submit = document.createElement("button")
     btnElement_submit.className = "end-quiz btn-submit-initials"
     btnElement_submit.id = "btn-submit-initials"    
@@ -303,45 +313,68 @@ var func_endQuiz = function(){
     // Set the div on index.html to our placeholder div to render the changes
     divElement_DynamicSection.innerHTML =  divElement.innerHTML;
 
+    // add score to storage
+    
 }
 
 
 
 
-var func_resetGame = function () {
-    
-     
-     var divElement = document.createElement("div");
-     divElement.className = "quiz-dynamic-section";
-     
-     var h1Element = document.createElement("h1")
-     h1Element.textContent = "High Scores! <br> Place holder remider to add ol with scores"
-     h1Element.className ="reset-quiz"
+var func_loadScore = function () {
+    var divElement = document.createElement("div");  
+    var h1Element = document. createElement("h1")
+    h1Element.textContent = "High Score! "
+    divElement.appendChild(h1Element)
 
-     var btnElement_goBack = document.createElement("button")
-     btnElement_goBack.className = "reset-quiz btn-go-back";
-     btnElement_goBack.id = "btn-go-back";
-     btnElement_goBack.textContent = "Go Back"
 
-     var btnElement_clearScore = document.createElement("button")
-     btnElement_clearScore.className = "reset-quiz btn-clear-score";
-     btnElement_clearScore.id = "btn-clear-score"
-     btnElement_clearScore.textContent = "Clear High Scores"
+    // add score to local storage here 
+    ArrStr_allScores.push(str_userInitials+" - "+int_score )
+    localStorage.setItem("ArrStr_allScores",JSON.stringify(ArrStr_allScores));
 
-     divElement.appendChild(h1Element);
-     // ToDo: list all scores in local cache
+    ArrStr_allScores = localStorage.getItem("ArrStr_allScores");
+    if(!ArrStr_allScores) ArrStr_allScores =[]
+    else ArrStr_allScores = JSON.parse(ArrStr_allScores)
+    for(var index = 0; index < ArrStr_allScores.length; index++){
+        var divElement_listItem = document.createElement("div")
+        divElement_listItem.id="high-score-"+index
+        divElement_listItem.textContent = ArrStr_allScores[index]
+        divElement.appendChild(divElement_listItem)
+    }
+
+
+    var btnElement_goBack = document.createElement("button")
+    btnElement_goBack.className = "reset-quiz btn-go-back";
+    btnElement_goBack.id = "btn-go-back";
+    btnElement_goBack.textContent = "Go Back"
+
+    var btnElement_clearScore = document.createElement("button")
+    btnElement_clearScore.className = "reset-quiz btn-clear-score";
+    btnElement_clearScore.id = "btn-clear-score"
+    btnElement_clearScore.textContent = "Clear High Scores"
+
+    // ToDo: list all scores in local cache
     // create a temp div to hold our buttons in one element
     var divElement_buttons = document.createElement("div")
     divElement_buttons.appendChild(btnElement_goBack);
     divElement_buttons.appendChild(btnElement_clearScore)
 
     divElement.appendChild(divElement_buttons);
-    
 
-    // Set the div on index.html to our placeholder div to render the changes
-    divElement_DynamicSection.innerHTML =  divElement.innerHTML;
+
+    divElement_DynamicSection.innerHTML =   divElement.innerHTML
+
 
      
+}
+
+var func_resetGame = function(){
+    int_decrementCount = 0;
+    int_score = 0;
+    var divElement_Home = document.createElement("div")
+    divElement_Home.innerHTML = "<div id=\"quiz-dynamic-section\" class=\"quiz-dynamic-section\"><h1>Coding Quizlet</h1><div> Lets test your coding skills. Start the timed quiz when ready</div><button id=\"btn-start\"class=\"btn-start\"> Start Button </button></div><div id=\"form-question-msg\" class=\"form-question-msg\"></div>"
+    
+
+    divElement_DynamicSection.innerHTML = divElement_Home.innerHTML
 }
 
 var buttonHandler =function(event){
@@ -380,7 +413,19 @@ var buttonHandler =function(event){
     else if (event.target.matches(".btn-submit-initials")) { 
         // users submited their initals and ended the quiz
         // listens on the submit button dynamically added by func_endQuiz
-        func_resetGame();
+        
+        str_userInitials = document.querySelector("#input-initials").value; 
+        
+        func_loadScore();
+    }
+    else if (event.target.matches(".btn-clear-score")){
+        // add score to local storage here 
+        ArrStr_allScores=[]
+        localStorage.setItem("ArrStr_allScores",JSON.stringify(ArrStr_allScores));
+        func_resetGame()
+    }
+    else if (event.target.matches(".btn-go-back")){
+        func_resetGame()
     }
     else
     {
