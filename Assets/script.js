@@ -2,6 +2,7 @@
 var bool_dbg = true;
 // end the quiz if all questions answered or times up
 var bool_endQuiz = false; 
+var int_secondsWait = 500;
 if(bool_dbg)console.log("debugging")
 var int_time = 60;
 var int_highScore = 0;
@@ -39,8 +40,46 @@ var func_waitnSeconds = function(paramSeconds){
 }
 
 var func_endQuiz = function(){
+    // ToDo: add current score to list of high scores
     var divElement = document.createElement("div");
     divElement.className = "quiz-dynamic-section";
+    
+    var h1Element = document.createElement("h1")
+    h1Element.textContent = "All Done!"
+    h1Element.className ="end-quiz"
+    
+
+    var pElement = document.createElement("p");
+    pElement.className = "end-quiz"
+    pElement.textContent = `Your final score is ${int_highScore}`
+
+    var formElement = document.createElement("form");
+    formElement.className = "end-quiz";
+    var labelElement = document.createElement("form");
+    labelElement.className = "end-quiz";
+    labelElement.textContent = "Enter Initials:"
+    var inputElement = document.createElement("input");
+    inputElement.className = "end-quiz";
+    var btnElement_submit = document.createElement("button")
+    btnElement_submit.className = "end-quiz btn-end-quiz"
+    btnElement_submit.id = "btn-end-quiz"    
+    btnElement_submit.textContent = "submit! "
+    divElement.appendChild(h1Element)
+    divElement.appendChild(pElement)
+    
+    //todo: add input to the label
+    labelElement.appendChild(inputElement)
+    //add label to form
+    formElement.appendChild(labelElement)
+    
+    // todo add button
+    formElement.appendChild(btnElement_submit)
+    
+    // add the form to our place holder div
+    divElement.appendChild(formElement);
+    //divElement.innerHTML = `<h1> ${obj_currentQuestion.str_question} </h1>`;
+    // Set the div on index.html to our placeholder div to render the changes
+    divElement_DynamicSection.innerHTML =  divElement.innerHTML;
 
 }
 
@@ -159,7 +198,7 @@ var buttonHandler =function(event){
         // ToDo check current answer
         // wait a few seconds
         //func_waitnSeconds(10000)
-        setTimeout(func_nextQuestion,1000)
+        setTimeout(func_nextQuestion, int_secondsWait)
 
         // ToDo adjust score
         // ToDo move to next question
