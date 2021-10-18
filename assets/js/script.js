@@ -1,40 +1,78 @@
+var int_startingTime = 90;
+var int_counter =  int_startingTime;
 
-var bool_dbg = true;
+
+
+var bool_dbg = false;
 // end the quiz if all questions answered or times up
 var bool_endQuiz = false; 
 var int_secondsWait = 800;
 if(bool_dbg)console.log("debugging")
-var int_score = 60;
-var int_distance = 60*1000;
+
+
 var int_decrementCount = 0;
 //var int_highScore = 0;
 var int_answerCounter = 0;
 var int_questionCounter= 0;
 
-var float_minutesToAdd = 1;
-var float_hoursToAdd = 0;
+
 
 var str_userAnswered = "";
 var str_userInitials = "Null";
-// create a dictionary of arrays
-// the key is the users initials
-// the value is an array of thier scores as an object
+
+
+// array of strings holding all scores
 var ArrStr_allScores = []
 ArrStr_allScores = localStorage.getItem("ArrStr_allScores");
 if(!ArrStr_allScores) ArrStr_allScores =[]
 else ArrStr_allScores = JSON.parse(ArrStr_allScores)
 
-var obj_oneScore = { str_Initials:"NULL", int_score:0, int_score:0 };
-
-
 // create an array of question object objects
 var arrObj_questions = [
-    {str_answer: "InsertOption1", str_question: "insertQuestion1", int_points:10*1000, correctAnswer: "InsertOption1", ArrStr_answerOptions: ["InsertOption1","InsertOption2", "InsertOption3"]},
-    {str_answer: "InsertOptionC", str_question: "insertQuestion2", int_points:10*1000, correctAnswer: "InsertOptionB", ArrStr_answerOptions: ["InsertOptionA","InsertOptionB", "InsertOptionC"]},
-    {str_answer: "InsertOption6", str_question: "insertQuestion3", int_points:10*1000, correctAnswer: "InsertOption5", ArrStr_answerOptions: ["InsertOption4","InsertOption5", "InsertOption6"]}
+    {str_answer: "Alerts", str_question: "Commonly used data types Do Not Include:", int_points:10, correctAnswer: "Alerts", ArrStr_answerOptions: ["Strings","Booleans", "Alerts", "Numbers"]},
+    {str_answer: "All of the above", str_question: "Arrays in Java Script can be used to store what?", int_points:10, correctAnswer: "All of the above", ArrStr_answerOptions: ["Strings and numbers","other arrays", "booleans", "All of the above"]},
+    {str_answer: "Curly Brackets" , str_question: "The condition in an if - else statement is enclosed with what?", int_points:10, correctAnswer: "Curly Brackets", ArrStr_answerOptions: ["quotes", "Curly Brackets" ,"parenthesis", "square breackets"]}
 ]
 
-// ============
+
+
+// the function that starts and stops the timer.
+var funct_startInterval = function(){
+    
+    
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+        
+        int_counter--;
+        int_counter -= int_decrementCount;
+        int_decrementCount=0
+    
+        
+      // Output the result in an element with id="timer"
+      var divElement_timer = document.querySelector("#timer");
+      divElement_timer.innerHTML = `Timer: ${int_counter}`
+    
+    if(bool_endQuiz){
+        // if the user finishes all the questions 
+        // stop the quiz and stop the timer
+        func_endQuiz();
+        clearInterval(x); // clearing the interval freezes the timer
+        //document.getElementById("timer").innerHTML = `Timer: ${int_days}d ${int_hours}h ${int_minutes}m ${int_seconds}s `
+        document.getElementById("timer").innerHTML = `Timer: ${int_counter} ` 
+    }
+        
+      // If the count down is over, write some text 
+      if (int_counter <= 0) {
+        func_endQuiz();
+        int_counter = 0;
+        clearInterval(x);
+        document.getElementById("timer").innerHTML = "Timer: EXPIRED";
+        
+      }
+    }, 1500);
+    
+    }
+
 
 //from index.html get the button element by the id named btn-start
 var btnElement_start = document.querySelector("#btn-start");
@@ -43,76 +81,6 @@ var btnElement_start = document.querySelector("#btn-start");
 // from index.html get the html div that will be dynamically updated
 var divElement_DynamicSection = document.querySelector("#quiz-dynamic-section");
 
-// a function that waits exactly three seconds, 
-// by calling built in setInterval function
-// then calls the clearInterval function to stop waiting
-var func_waitnSeconds = function(paramSeconds){
-    setTimeout( paramSeconds)
-
-}
-
-var func_setTime = function(){
-
-    
-// Set the date we're counting down to, todays date plus some time
-var int_countDownDate =  new Date().getTime();
-
-//int_countDownDate += 60*60*1000 ; // add 1 hour, or 59 int_minutes to todays future date
-//int_countDownDate += 60*1000; // add 60 int_seconds to  future date
-
-int_countDownDate += float_minutesToAdd* 60*1000; // add x amount of minutes
-//int_countDownDate += float_hoursToAdd*60*60*1000
-
-
-// Update the count down every 1 second
-var x = setInterval(function() {
-
-  // Get today's date and time
-  var int_now = new Date().getTime();
-    
-  // Find the int_distance between int_now and the int_countDownDate
-    int_distance = int_countDownDate - int_now;
-  // set the global var, with the users times score to the 
-  // inital difference between the start and end time
-  
-  int_distance += int_decrementCount
-  
-  
-  int_score = int_distance
-    
-  // Time calculations for int_days, int_hours, int_minutes and int_seconds
-  var int_days = Math.floor(int_distance / (1000 * 60 * 60 * 24));
-  var int_hours = Math.floor((int_distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var int_minutes = Math.floor((int_distance % (1000 * 60 * 60)) / (1000 * 60));
-  var int_seconds = Math.floor((int_distance % (1000 * 60)) / 1000);
-    
-  // Output the result in an element with id="timer"
-  var divElement_timer = document.querySelector("#timer");
-  divElement_timer.innerHTML = `Timer: ${int_minutes}m ${int_seconds}s `
-
-if(bool_endQuiz){
-    // if the user finishes all the questions 
-    // stop the quiz and stop the timer
-    func_endQuiz();
-    clearInterval(x); // clearing the interval freezes the timer
-    //document.getElementById("timer").innerHTML = `Timer: ${int_days}d ${int_hours}h ${int_minutes}m ${int_seconds}s `
-    document.getElementById("timer").innerHTML = `Timer: ${int_minutes}m ${int_seconds}s `
-
-    
-   
-}
-    
-  // If the count down is over, write some text 
-  if (int_distance <= 0) {
-    func_endQuiz();
-    int_score = 0;
-    clearInterval(x);
-    document.getElementById("timer").innerHTML = "Timer: EXPIRED";
-    
-  }
-}, 500);
-
-}
 
 var func_checkAnswer = function(){
     var bool_validAnswer = false;
@@ -152,8 +120,8 @@ var func_checkAnswer = function(){
             divElement_temp.appendChild(divElement_correct)
             divElement_temp.appendChild(divElement_incorrect)
 
-            if(bool_dbg)console.log(`reduce points by ${obj_currentQuestion.int_points} | int_score ${int_score}`)
-            int_decrementCount -= obj_currentQuestion.int_points;
+            
+            int_decrementCount += obj_currentQuestion.int_points;
         }
     bool_validAnswer = false
     divElement_msg.innerHTML = divElement_temp.innerHTML;    
@@ -195,15 +163,17 @@ var func_nextQuestion = function (){
     // each question will be an individual form
     // the form will have a label tag, select tag with multiple options
     var formElement = document.createElement("form");
-    formElement.className = "form-question";
+    formElement.className = "form-question b-0";
+    formElement.style = "border:none"
 
     // the question is added to index.html as a label
     var labelElement = document.createElement("label");
-    labelElement.className = "form-question label-question";
+    labelElement.className = "form-question label-question ";
     // add the question text to the label
     labelElement.textContent = str_question;
     var selectElement = document.createElement("select");
     selectElement.className = 'form-question select-question';
+    selectElement.style = " width:300px;"
     // force the drop down to expand to a size equal to the number 
     // of answers for this question. This forces the options not to appear
     // in  a drop down
@@ -217,7 +187,8 @@ var func_nextQuestion = function (){
         var str_currentAnswer = ArrStr_answerOptions[i];
         optionElement.value = str_currentAnswer;
         optionElement.textContent = str_currentAnswer;
-        optionElement.className = "form-question question-option"
+        optionElement.className = "form-question question-option b-0"
+        optionElement.style = "border:none";
         // set a unique id across all possible answers across all questions
         optionElement.id = "answer-id-" + int_answerCounter;
         // add a custom data attribute to the options element
@@ -234,6 +205,8 @@ var func_nextQuestion = function (){
 
     // add the label to the form 
     formElement.appendChild(labelElement);
+    var brElement = document.createElement("br");
+    formElement.appendChild(brElement)
     //add the select to the form
     formElement.appendChild(selectElement);
 
@@ -276,9 +249,11 @@ var func_endQuiz = function(){
 
     var pElement = document.createElement("p");
     pElement.className = "end-quiz"
-    if(int_score< 0) int_score = 0;
-    int_score = Math.floor(int_score/1000)
-    pElement.textContent = `Your final score is ${int_score}`
+
+
+    if(int_counter< 0) int_counter = 0;
+    int_score = Math.floor(int_counter)
+    pElement.textContent = `Your final score is ${int_counter}`
 
     
 
@@ -327,9 +302,7 @@ var func_loadScore = function () {
     divElement.appendChild(h1Element)
 
 
-    // add score to local storage here 
-    ArrStr_allScores.push(str_userInitials+" - "+int_score )
-    localStorage.setItem("ArrStr_allScores",JSON.stringify(ArrStr_allScores));
+    
 
     ArrStr_allScores = localStorage.getItem("ArrStr_allScores");
     if(!ArrStr_allScores) ArrStr_allScores =[]
@@ -369,7 +342,7 @@ var func_loadScore = function () {
 
 var func_resetGame = function(){
     int_decrementCount = 0;
-    int_score = 0;
+    int_counter = int_startingTime;
     var divElement_Home = document.createElement("div")
     divElement_Home.innerHTML = "<div id=\"quiz-dynamic-section\" class=\"quiz-dynamic-section\"><h1>Coding Quizlet</h1><div> Lets test your coding skills. Start the timed quiz when ready</div><button id=\"btn-start\"class=\"btn-start\"> Start Button </button></div><div id=\"form-question-msg\" class=\"form-question-msg\"></div>"
     
@@ -387,7 +360,7 @@ var buttonHandler =function(event){
 	if(event.target.matches(".btn-start")){
         // the event listenr is specifically listening on the start button 
         func_startQuiz();
-        func_setTime();
+        funct_startInterval();
 	}
     else if(event.target.matches(".question-option") && !bool_endQuiz ){
         // if button clicked for next question & we are allowed to continue the quiz
@@ -414,7 +387,11 @@ var buttonHandler =function(event){
         // users submited their initals and ended the quiz
         // listens on the submit button dynamically added by func_endQuiz
         
-        str_userInitials = document.querySelector("#input-initials").value; 
+        str_userInitials = document.querySelector("#input-initials").value;
+        
+        // add score to local storage here 
+        ArrStr_allScores.push(str_userInitials+" - "+ int_counter )
+        localStorage.setItem("ArrStr_allScores",JSON.stringify(ArrStr_allScores));
         
         func_loadScore();
     }
@@ -444,3 +421,6 @@ btnElement_start.addEventListener("click", buttonHandler);
 // this allows us to listen for mouse clicks on elemts that are not rendered yet
 // the specific element targetd will be determined in the function buttonHandler
 divElement_DynamicSection.addEventListener("click",buttonHandler)
+    
+
+
