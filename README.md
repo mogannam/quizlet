@@ -1,42 +1,37 @@
-# 04 Web APIs: Code Quiz
 
-As you proceed in your career as a web developer, you will probably be asked to complete a coding assessment, which is typically a combination of multiple-choice questions and interactive challenges. For this challenge, you will build a timed code quiz that's made up of multiple-choice questions. This app will run in the browser and feature dynamically updated HTML and CSS powered by your JavaScript code. It will also feature a clean and polished user interface and be responsive, ensuring that it adapts to multiple screen sizes.
+# password-generator
 
-## User Story
 
-```
-AS A coding boot camp student
-I WANT to take a timed quiz on JavaScript fundamentals that stores high scores
-SO THAT I can gauge my progress compared to my peers
-```
+## Table of contents
+* [General info](#general-info)
+* [Technologies](#technologies)
+* [Setup](#setup)
+* [Mockup](#Mockup)
 
-## Acceptance Criteria
+## General info
 
-```
-GIVEN I am taking a code quiz
-WHEN I click the Start button
-THEN a timer starts and I am presented with a question
-WHEN I answer a question
-THEN I am presented with another question
-WHEN I answer a question incorrectly
-THEN time is subtracted from the clock
-WHEN all questions are answered or the timer reaches 0
-THEN the game is over
-WHEN the game is over
-THEN I can save my initials and score
-```
+<p>A simple project for a simple quiz website, that tracks the time of the quiz and saves it to local storage. </p>
 
-The following animation demonstrates the application functionality:
 
-![Demonstration of the Coding Quiz Challenge.](./Assets/04-web-apis-homework-demo.gif)
+<a href=" https://github.com/mogannam/quizlet.git"> Project  on Github</a>
 
-### Review
+<a href="https://mogannam.github.io/quizlet/"> Deployed Project</a>
 
-You are required to submit the following for review:
+<p>Clone the projecct here: <em>git@github.com:mogannam/quizlet.git</em></p>
+	
+## Technologies
+Project is created with:
+* CSS
+* Java Script
+* HTML
 
-* The URL of the functional, deployed application.
+	
+## Setup
+Just open the index.html file in a web browser. This is just a simple html website that dynamically updates via Java Script.
 
-* The URL of the GitHub repository. Give the repository a unique name and include a README describing the project.
+## Mockup
+<img src="https://github.com/mogannam/quizlet/blob/main/QuizletMockup.png?raw=true">
 
----
-© 2021 Trilogy Education Services, LLC, a 2U, Inc. brand. Confidential and Proprietary. All Rights Reserved.
+
+
+
